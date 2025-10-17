@@ -53,6 +53,15 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.post('/logout', (req, res) => {
+    try {
+        res.clearCookie('token'); // if using cookies
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.get("/", async (req, res) => {
     try {
         const users = await User.find();
