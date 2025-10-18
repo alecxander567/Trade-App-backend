@@ -42,4 +42,14 @@ router.post('/add', upload.single('image'), async (req, res) => {
     }
 });
 
+router.get('/', async (req, res) => {
+    try {
+        const items = await Item.find();
+        res.json({ items });
+    } catch (err) {
+        console.error('Error fetching items:', err);
+        res.status(500).json({ error: 'Failed to fetch items' });
+    }
+});
+
 export default router;
