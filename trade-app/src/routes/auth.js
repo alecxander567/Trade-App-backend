@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/logout', (req, res) => {
     try {
-        res.clearCookie('token'); // if using cookies
+        res.clearCookie('token');
         res.status(200).json({ message: 'Logged out successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });

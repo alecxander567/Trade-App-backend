@@ -5,7 +5,12 @@ const itemSchema = new mongoose.Schema({
     description: { type: String, required: true },
     image: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    stars: { type: Number, default: 0 },
+    starredBy: {
+        type: [String],
+        default: [],
+    },
 });
 
 export default mongoose.model('Item', itemSchema);

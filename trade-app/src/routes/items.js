@@ -52,4 +52,33 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.post('/:id/star', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
+
+        const item = await Item.findById(id);
+        if (!item) return res.status(404).json({ error: 'Item not found' });
+
+        if (!item.starredBy) item.starredBy = [];
+
+        const alreadyStarred = item.starredBy.includes(userId);
+
+        if (alreadyStarred) {
+            item.starredBy = item.starredBy.filter(id => id !== userId);
+            item.stars -= 1;
+            await item.save();
+            return res.json({ message: 'Star removed', stars: item.stars, starred: false });
+        } else {
+            item.starredBy.push(userId);
+            item.stars += 1;
+            await item.save();
+            return res.json({ message: 'Star added', stars: item.stars, starred: true });
+        }
+    } catch (err) {
+        console.error('Error updating stars:', err);
+        res.status(500).json({ error: 'Failed to update stars' });
+    }
+});
+
 export default router;
