@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f4cf67fa-617f-419b-adec-0e6d18444e38" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trade-app/src/models/Item.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/models/Item.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trade-app/src/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/models/User.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trade-app/src/routes/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/auth.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trade-app/src/routes/items.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/items.js" afterDir="false" />
     </list>
@@ -84,6 +81,10 @@
       <workItem from="1761049567585" duration="83000" />
       <workItem from="1761049689884" duration="1364000" />
       <workItem from="1761111377543" duration="5598000" />
+      <workItem from="1761132030618" duration="96000" />
+      <workItem from="1761132138792" duration="391000" />
+      <workItem from="1761134523340" duration="331000" />
+      <workItem from="1761135177213" duration="2068000" />
     </task>
     <servers />
   </component>

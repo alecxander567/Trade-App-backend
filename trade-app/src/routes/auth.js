@@ -53,12 +53,11 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// GET /api/users?exclude=<currentUserId>
 router.get('/', async (req, res) => {
     try {
         const excludeId = req.query.exclude; // get current user ID from query
         const users = await User.find(excludeId ? { _id: { $ne: excludeId } } : {})
-            .select('-password'); // exclude password
+            .select('-password');
         res.json({ users });
     } catch (err) {
         console.error(err);

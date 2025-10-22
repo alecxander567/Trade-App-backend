@@ -97,7 +97,7 @@ router.post('/:id/star', async (req, res) => {
             return res.status(400).json({ error: 'Invalid user ID' });
         }
 
-        const objectUserId = new mongoose.Types.ObjectId(userId); // FIXED
+        const objectUserId = new mongoose.Types.ObjectId(userId);
         const item = await Item.findById(id);
         if (!item) return res.status(404).json({ error: 'Item not found' });
 
@@ -119,6 +119,56 @@ router.post('/:id/star', async (req, res) => {
     } catch (err) {
         console.error('Error updating stars:', err);
         res.status(500).json({ error: 'Failed to update stars', details: err.message });
+    }
+});
+
+router.put('/:id', upload.single('image'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, userId } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid item ID' });
+        }
+
+        const item = await Item.findById(id);
+        if (!item) return res.status(404).json({ error: 'Item not found' });
+
+        if (item.owner.toString() !== userId) {
+            return res.status(403).json({ error: 'Unauthorized to edit this post' });
+        }
+
+        const updatedData = { name, description };
+        if (req.file) {
+            updatedData.image = `/uploads/${req.file.filename}`;
+        }
+
+        const updatedItem = await Item.findByIdAndUpdate(id, updatedData, { new: true });
+        res.json({ message: 'Item updated successfully', item: updatedItem });
+
+    } catch (err) {
+        console.error('Error updating item:', err);
+        res.status(500).json({ error: 'Failed to update item', details: err.message });
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
+
+        const item = await Item.findById(id);
+        if (!item) return res.status(404).json({ error: 'Item not found' });
+
+        if (item.owner.toString() !== userId) {
+            return res.status(403).json({ error: 'Unauthorized to delete this post' });
+        }
+
+        await item.deleteOne();
+        res.json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        res.status(500).json({ error: 'Server error while deleting item' });
     }
 });
 
