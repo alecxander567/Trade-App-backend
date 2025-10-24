@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f4cf67fa-617f-419b-adec-0e6d18444e38" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/trade-app/src/models/Notification.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/trade-app/src/routes/notifications.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trade-app/src/routes/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trade-app/src/routes/items.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/items.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,10 +87,24 @@
       <workItem from="1761132138792" duration="391000" />
       <workItem from="1761134523340" duration="331000" />
       <workItem from="1761135177213" duration="2068000" />
+      <workItem from="1761188186281" duration="17000" />
+      <workItem from="1761278035026" duration="986000" />
+      <workItem from="1761283688505" duration="7247000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/trade-app/src/models/Notification.js</url>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

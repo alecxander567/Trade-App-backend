@@ -4,8 +4,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./trade-app/src/routes/auth.js";
 import itemsRoutes from "./trade-app/src/routes/items.js";
+import notificationRoutes from "./trade-app/src/routes/notifications.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +26,7 @@ app.use('/uploads', express.static('uploads'));
 app.use("/api/auth", authRoutes);
 app.use("/api/items", itemsRoutes);
 app.use("/api/users", authRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB connected"))

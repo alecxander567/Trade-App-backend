@@ -55,9 +55,16 @@ router.post('/login', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const excludeId = req.query.exclude; // get current user ID from query
-        const users = await User.find(excludeId ? { _id: { $ne: excludeId } } : {})
-            .select('-password');
+        const excludeId = req.query.exclude;
+        if (!excludeId) return res.status(400).json({ error: "Exclude user ID is required" });
+
+        const currentUser = await User.findById(excludeId).select('partners');
+        if (!currentUser) return res.status(404).json({ error: "Current user not found" });
+
+        const users = await User.find({
+            _id: { $nin: [excludeId, ...currentUser.partners] }
+        }).select('-password');
+
         res.json({ users });
     } catch (err) {
         console.error(err);
