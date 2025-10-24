@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f4cf67fa-617f-419b-adec-0e6d18444e38" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/trade-app/src/models/Notification.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade-app/src/routes/notifications.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trade-app/src/routes/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/routes/notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/notifications.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +87,7 @@
       <workItem from="1761188186281" duration="17000" />
       <workItem from="1761278035026" duration="986000" />
       <workItem from="1761283688505" duration="7247000" />
+      <workItem from="1761304707860" duration="1791000" />
     </task>
     <servers />
   </component>
@@ -101,7 +99,6 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/trade-app/src/models/Notification.js</url>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

@@ -26,7 +26,6 @@ router.post('/', async (req, res) => {
             createdAt: new Date()
         });
 
-        console.log("✅ Notification created:", notification);
         res.status(201).json(notification);
     } catch (err) {
         console.error("❌ Error creating notification:", err);
@@ -46,7 +45,6 @@ router.get('/:userId', async (req, res) => {
             .populate('sender', 'username email')
             .sort({ createdAt: -1 });
 
-        console.log(`📬 Found ${notifications.length} notifications for user ${userId}`);
         res.json(notifications);
     } catch (err) {
         console.error("❌ Error fetching notifications:", err);
