@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 
         res.status(201).json(notification);
     } catch (err) {
-        console.error("❌ Error creating notification:", err);
+        console.error("Error creating notification:", err);
         res.status(500).json({ error: "Unable to create notification", details: err.message });
     }
 });
@@ -47,7 +47,7 @@ router.get('/:userId', async (req, res) => {
 
         res.json(notifications);
     } catch (err) {
-        console.error("❌ Error fetching notifications:", err);
+        console.error("Error fetching notifications:", err);
         res.status(500).json({ error: "Unable to fetch notifications", details: err.message });
     }
 });
@@ -72,7 +72,7 @@ router.put("/:id/read", async (req, res) => {
 
         res.json({ message: "Notification marked as read", notification });
     } catch (err) {
-        console.error("❌ Error marking notification as read:", err);
+        console.error("Error marking notification as read:", err);
         res.status(500).json({ error: "Failed to mark as read", details: err.message });
     }
 });
@@ -117,7 +117,7 @@ router.put("/:id/accept", async (req, res) => {
             }
         });
     } catch (err) {
-        console.error("❌ Error accepting trader request:", err);
+        console.error("Error accepting trader request:", err);
         res.status(500).json({ error: "Failed to accept trader request", details: err.message });
     }
 });
@@ -134,7 +134,7 @@ router.delete("/:id", async (req, res) => {
 
         res.json({ message: "Notification deleted successfully" });
     } catch (err) {
-        console.error("❌ Error deleting notification:", err);
+        console.error("Error deleting notification:", err);
         res.status(500).json({ error: "Failed to delete notification", details: err.message });
     }
 });

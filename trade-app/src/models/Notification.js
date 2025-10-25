@@ -1,11 +1,16 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema({
-    sender: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    receiver: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    recipient: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    type: {
+        type: String,
+        enum: ['friend_request', 'trade_offer', 'trade_accepted', 'trade_rejected'],
+        required: true
+    },
     message: { type: String, required: true },
-    isRead: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now },
-});
+    tradeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Trade' },
+    isRead: { type: Boolean, default: false }
+}, { timestamps: true });
 
-export default mongoose.model("Notification", notificationSchema);
+export default mongoose.model('Notification', notificationSchema);

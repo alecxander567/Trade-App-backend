@@ -62,7 +62,6 @@ router.get('/', async (req, res) => {
         }
 
         const currentUser = await User.findById(userId).select('partners');
-        console.log('Current user:', currentUser);
 
         if (!currentUser) return res.status(404).json({ error: 'User not found' });
 
@@ -73,10 +72,11 @@ router.get('/', async (req, res) => {
 
         const allItems = await Item.find({});
         allItems.forEach(item => {
-            console.log('  - Item:', item.name, 'Owner:', item.owner, 'Owner type:', typeof item.owner);
         });
 
-        const items = await Item.find({ owner: { $in: allowedOwners } }).sort({ createdAt: -1 });
+        const items = await Item.find({ owner: { $in: allowedOwners } })
+            .populate('owner', 'username')
+            .sort({ createdAt: -1 });
 
         res.json({ items });
     } catch (err) {

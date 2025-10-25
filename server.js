@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoutes from "./trade-app/src/routes/auth.js";
 import itemsRoutes from "./trade-app/src/routes/items.js";
 import notificationRoutes from "./trade-app/src/routes/notifications.js";
+import tradeRoutes from './trade-app/src/routes/trades.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -27,6 +28,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/items", itemsRoutes);
 app.use("/api/users", authRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use('/api/trades', tradeRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB connected"))
