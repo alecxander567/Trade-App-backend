@@ -2,6 +2,7 @@ import express from 'express';
 import Trade from '../models/Trade.js';
 import Notification from '../models/Notification.js';
 import Item from '../models/Item.js';
+import Message from '../models/Message.js';
 
 const router = express.Router();
 
@@ -41,6 +42,15 @@ router.post('/', async (req, res) => {
 
         await notification.save();
 
+        const tradeMessage = new Message({
+            sender: userId,
+            receiver: targetItem.owner._id,
+            text: `🔄 Trade Offer\n\nHi! I'm ${offeredItem.owner.username}.\n\n📦 I'm offering: ${offeredItem.name}\n${offeredItem.description}\n\n💎 For your: ${targetItem.name}\n${targetItem.description}\n\nInterested in this trade?`,
+            isRead: false
+        });
+
+        await tradeMessage.save();
+
         res.status(201).json({
             message: 'Trade offer sent successfully',
             trade: newTrade
@@ -60,7 +70,7 @@ router.get('/trades/:userId', async (req, res) => {
             recipient: userId,
             type: { $in: ['trade_offer', 'trade_accepted', 'trade_rejected'] }
         })
-            .populate('sender', 'username')
+            .populate('sender', '_id username')
             .sort({ createdAt: -1 })
             .limit(20);
 

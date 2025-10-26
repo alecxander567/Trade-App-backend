@@ -3,6 +3,7 @@ import multer from "multer";
 import mongoose from "mongoose";
 import User from '../models/User.js';
 import Item from "../models/Item.js";
+import Message from '../models/Message.js';
 
 const router = express.Router();
 
@@ -16,6 +17,62 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+router.post('/', async (req, res) => {
+    try {
+        const { offeredItemId, targetItemId, userId } = req.body;
+
+        if (!offeredItemId || !targetItemId || !userId) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const offeredItem = await Item.findById(offeredItemId).populate('owner', 'username');
+        const targetItem = await Item.findById(targetItemId).populate('owner', 'username');
+
+        if (!offeredItem || !targetItem) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+
+        const newTrade = new Trade({
+            offeredItem: offeredItemId,
+            targetItem: targetItemId,
+            offeredBy: userId,
+            targetOwner: targetItem.owner._id,
+            status: 'pending'
+        });
+
+        await newTrade.save();
+
+        const notification = new Notification({
+            recipient: targetItem.owner._id,
+            sender: userId,
+            type: 'trade_offer',
+            message: `${offeredItem.owner.username} wants to trade their "${offeredItem.name}" for your "${targetItem.name}"`,
+            tradeId: newTrade._id,
+            isRead: false
+        });
+
+        await notification.save();
+
+        const tradeMessage = new Message({
+            sender: userId,
+            receiver: targetItem.owner._id,
+            text: `Hi! I'd like to trade my "${offeredItem.name}" for your "${targetItem.name}". Would you be interested?`,
+            isRead: false
+        });
+
+        await tradeMessage.save();
+
+        res.status(201).json({
+            message: 'Trade offer sent successfully',
+            trade: newTrade
+        });
+
+    } catch (err) {
+        console.error('Error creating trade:', err);
+        res.status(500).json({ error: 'Failed to create trade offer', details: err.message });
+    }
+});
 
 router.post('/add', upload.single('image'), async (req, res) => {
     try {

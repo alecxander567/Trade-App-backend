@@ -20,10 +20,10 @@ router.post('/', async (req, res) => {
     try {
         const notification = await Notification.create({
             sender: senderId,
-            receiver: receiverId,
+            recipient: receiverId,
+            type: 'friend_request',
             message,
-            isRead: false,
-            createdAt: new Date()
+            isRead: false
         });
 
         res.status(201).json(notification);
@@ -41,7 +41,7 @@ router.get('/:userId', async (req, res) => {
     }
 
     try {
-        const notifications = await Notification.find({ receiver: userId })
+        const notifications = await Notification.find({ recipient: userId })  // ✅ Changed
             .populate('sender', 'username email')
             .sort({ createdAt: -1 });
 
@@ -87,7 +87,7 @@ router.put("/:id/accept", async (req, res) => {
         }
 
         const sender = await User.findById(notification.sender);
-        const receiver = await User.findById(notification.receiver);
+        const receiver = await User.findById(notification.recipient);  // ✅ Changed
 
         if (!sender) {
             return res.status(404).json({ error: "Sender not found" });
