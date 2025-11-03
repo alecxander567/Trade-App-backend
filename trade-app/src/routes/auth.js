@@ -1,84 +1,111 @@
 import { Router } from "express";
 import User from "../models/User.js";
-import bcrypt from 'bcrypt';
+import Item from "../models/Item.js";
+import bcrypt from "bcrypt";
 
 const router = Router();
 
-router.post('/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
+router.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
-        if (!username || !email || !password) {
-            return res.status(400).json({ error: 'All fields are required' });
-        }
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ error: 'Email already exists' });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = new User({ username, email, password: hashedPassword });
-        await user.save();
-
-        res.status(201).json({ message: 'User registered successfully', user });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: "All fields are required" });
     }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({ username, email, password: hashedPassword });
+    await user.save();
+
+    res.status(201).json({ message: "User registered successfully", user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(400).json({ error: 'User not found' });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ error: 'Invalid password' });
-        }
-
-        res.status(200).json({ message: 'Login successful', user });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
     }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid password" });
+    }
+
+    res.status(200).json({ message: "Login successful", user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.get('/', async (req, res) => {
-    try {
-        const excludeId = req.query.exclude;
-        if (!excludeId) return res.status(400).json({ error: "Exclude user ID is required" });
+router.get("/", async (req, res) => {
+  try {
+    const excludeId = req.query.exclude;
+    if (!excludeId)
+      return res.status(400).json({ error: "Exclude user ID is required" });
 
-        const currentUser = await User.findById(excludeId).select('partners');
-        if (!currentUser) return res.status(404).json({ error: "Current user not found" });
+    const currentUser = await User.findById(excludeId).select("partners");
+    if (!currentUser)
+      return res.status(404).json({ error: "Current user not found" });
 
-        const users = await User.find({
-            _id: { $nin: [excludeId, ...currentUser.partners] }
-        }).select('-password');
+    const users = await User.find({
+      _id: { $nin: [excludeId, ...currentUser.partners] },
+    }).select("-password");
 
-        res.json({ users });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch users' });
-    }
+    res.json({ users });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
 });
 
-router.post('/logout', (req, res) => {
-    try {
-        res.clearCookie('token');
-        res.status(200).json({ message: 'Logged out successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate(
+      "partners",
+      "username profileImage",
+    );
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const itemsCount = await Item.countDocuments({ owner: user._id });
+
+    res.json({
+      username: user.username,
+      email: user.email,
+      profileImage: user.profileImage,
+      partners: user.partners,
+      itemsCount,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/logout", (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default router;

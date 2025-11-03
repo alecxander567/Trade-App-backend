@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f4cf67fa-617f-419b-adec-0e6d18444e38" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/trade-app/src/models/Message.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade-app/src/routes/messages.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/models/Item.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/models/Item.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/models/Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/models/Message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/models/Notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/models/Notification.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/models/Trade.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/models/Trade.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/models/User.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/routes/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/auth.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trade-app/src/routes/items.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/items.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trade-app/src/routes/messages.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/messages.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trade-app/src/routes/notifications.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/notifications.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trade-app/src/routes/trades.js" beforeDir="false" afterPath="$PROJECT_DIR$/trade-app/src/routes/trades.js" afterDir="false" />
     </list>
@@ -98,6 +103,15 @@
       <workItem from="1761304707860" duration="1791000" />
       <workItem from="1761367162572" duration="5363000" />
       <workItem from="1761449876196" duration="6364000" />
+      <workItem from="1761464798920" duration="4484000" />
+      <workItem from="1761474350351" duration="325000" />
+      <workItem from="1761632098734" duration="515000" />
+      <workItem from="1761645209937" duration="1261000" />
+      <workItem from="1761874751020" duration="1027000" />
+      <workItem from="1761972799214" duration="1081000" />
+      <workItem from="1762003698510" duration="441000" />
+      <workItem from="1762043299818" duration="742000" />
+      <workItem from="1762169164793" duration="1259000" />
     </task>
     <servers />
   </component>

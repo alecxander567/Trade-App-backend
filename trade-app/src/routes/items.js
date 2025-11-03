@@ -1,232 +1,263 @@
 import express from "express";
 import multer from "multer";
 import mongoose from "mongoose";
-import User from '../models/User.js';
+import User from "../models/User.js";
 import Item from "../models/Item.js";
-import Message from '../models/Message.js';
+import Message from "../models/Message.js";
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
 });
 
 const upload = multer({ storage });
 
-router.post('/', async (req, res) => {
-    try {
-        const { offeredItemId, targetItemId, userId } = req.body;
+router.post("/", async (req, res) => {
+  try {
+    const { offeredItemId, targetItemId, userId } = req.body;
 
-        if (!offeredItemId || !targetItemId || !userId) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
-
-        const offeredItem = await Item.findById(offeredItemId).populate('owner', 'username');
-        const targetItem = await Item.findById(targetItemId).populate('owner', 'username');
-
-        if (!offeredItem || !targetItem) {
-            return res.status(404).json({ error: 'Item not found' });
-        }
-
-        const newTrade = new Trade({
-            offeredItem: offeredItemId,
-            targetItem: targetItemId,
-            offeredBy: userId,
-            targetOwner: targetItem.owner._id,
-            status: 'pending'
-        });
-
-        await newTrade.save();
-
-        const notification = new Notification({
-            recipient: targetItem.owner._id,
-            sender: userId,
-            type: 'trade_offer',
-            message: `${offeredItem.owner.username} wants to trade their "${offeredItem.name}" for your "${targetItem.name}"`,
-            tradeId: newTrade._id,
-            isRead: false
-        });
-
-        await notification.save();
-
-        const tradeMessage = new Message({
-            sender: userId,
-            receiver: targetItem.owner._id,
-            text: `Hi! I'd like to trade my "${offeredItem.name}" for your "${targetItem.name}". Would you be interested?`,
-            isRead: false
-        });
-
-        await tradeMessage.save();
-
-        res.status(201).json({
-            message: 'Trade offer sent successfully',
-            trade: newTrade
-        });
-
-    } catch (err) {
-        console.error('Error creating trade:', err);
-        res.status(500).json({ error: 'Failed to create trade offer', details: err.message });
+    if (!offeredItemId || !targetItemId || !userId) {
+      return res.status(400).json({ error: "Missing required fields" });
     }
+
+    const offeredItem = await Item.findById(offeredItemId).populate(
+      "owner",
+      "username",
+    );
+    const targetItem = await Item.findById(targetItemId).populate(
+      "owner",
+      "username",
+    );
+
+    if (!offeredItem || !targetItem) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    const newTrade = new Trade({
+      offeredItem: offeredItemId,
+      targetItem: targetItemId,
+      offeredBy: userId,
+      targetOwner: targetItem.owner._id,
+      status: "pending",
+    });
+
+    await newTrade.save();
+
+    const notification = new Notification({
+      recipient: targetItem.owner._id,
+      sender: userId,
+      type: "trade_offer",
+      message: `${offeredItem.owner.username} wants to trade their "${offeredItem.name}" for your "${targetItem.name}"`,
+      tradeId: newTrade._id,
+      isRead: false,
+    });
+
+    await notification.save();
+
+    const tradeMessage = new Message({
+      sender: userId,
+      receiver: targetItem.owner._id,
+      text: `Hi! I'd like to trade my "${offeredItem.name}" for your "${targetItem.name}". Would you be interested?`,
+      isRead: false,
+    });
+
+    await tradeMessage.save();
+
+    res.status(201).json({
+      message: "Trade offer sent successfully",
+      trade: newTrade,
+    });
+  } catch (err) {
+    console.error("Error creating trade:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to create trade offer", details: err.message });
+  }
 });
 
-router.post('/add', upload.single('image'), async (req, res) => {
-    try {
-        const { name, description, owner } = req.body;
+router.post("/add", upload.single("image"), async (req, res) => {
+  try {
+    const { name, description, owner } = req.body;
 
-        if (!name || !description) {
-            return res.status(400).json({ error: 'Name and description are required' });
-        }
-
-        if (!owner) {
-            return res.status(400).json({ error: 'Owner is required' });
-        }
-
-        const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
-
-        const ownerObjectId = new mongoose.Types.ObjectId(owner);
-
-        const newItem = new Item({
-            name,
-            description,
-            image: imagePath,
-            owner: ownerObjectId,
-        });
-
-        await newItem.save();
-
-        const savedItem = await Item.findById(newItem._id);
-
-        res.status(201).json({ message: 'Item created', item: newItem });
-    } catch (err) {
-        console.error('Error saving item:', err);
-        res.status(500).json({ error: 'Failed to create item', details: err.message });
+    if (!name || !description) {
+      return res
+        .status(400)
+        .json({ error: "Name and description are required" });
     }
+
+    if (!owner) {
+      return res.status(400).json({ error: "Owner is required" });
+    }
+
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+    const ownerObjectId = new mongoose.Types.ObjectId(owner);
+
+    const newItem = new Item({
+      name,
+      description,
+      image: imagePath,
+      owner: ownerObjectId,
+    });
+
+    await newItem.save();
+
+    const savedItem = await Item.findById(newItem._id);
+
+    res.status(201).json({ message: "Item created", item: newItem });
+  } catch (err) {
+    console.error("Error saving item:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to create item", details: err.message });
+  }
 });
 
-router.get('/', async (req, res) => {
-    try {
-        const { userId } = req.query;
+router.get("/", async (req, res) => {
+  try {
+    const { userId } = req.query;
 
-        if (!userId) return res.status(400).json({ error: 'User ID is required' });
+    if (!userId) return res.status(400).json({ error: "User ID is required" });
 
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ error: 'Invalid user ID format' });
-        }
-
-        const currentUser = await User.findById(userId).select('partners');
-
-        if (!currentUser) return res.status(404).json({ error: 'User not found' });
-
-        const allowedOwners = [
-            currentUser._id,
-            ...currentUser.partners.map(id => new mongoose.Types.ObjectId(id))
-        ];
-
-        const allItems = await Item.find({});
-        allItems.forEach(item => {
-        });
-
-        const items = await Item.find({ owner: { $in: allowedOwners } })
-            .populate('owner', 'username')
-            .sort({ createdAt: -1 });
-
-        res.json({ items });
-    } catch (err) {
-        console.error('Error fetching items:', err);
-        res.status(500).json({ error: 'Failed to fetch items', details: err.message });
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID format" });
     }
+
+    const currentUser = await User.findById(userId).select("partners");
+
+    if (!currentUser) return res.status(404).json({ error: "User not found" });
+
+    const allowedOwners = [
+      currentUser._id,
+      ...currentUser.partners.map((id) => new mongoose.Types.ObjectId(id)),
+    ];
+
+    const allItems = await Item.find({});
+    allItems.forEach((item) => {});
+
+    const items = await Item.find({ owner: { $in: allowedOwners } })
+      .populate("owner", "username")
+      .sort({ createdAt: -1 });
+
+    res.json({ items });
+  } catch (err) {
+    console.error("Error fetching items:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch items", details: err.message });
+  }
 });
 
-router.post('/:id/star', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { userId } = req.body;
+router.post("/:id/star", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ error: 'Invalid item ID' });
-        }
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ error: 'Invalid user ID' });
-        }
-
-        const objectUserId = new mongoose.Types.ObjectId(userId);
-        const item = await Item.findById(id);
-        if (!item) return res.status(404).json({ error: 'Item not found' });
-
-        if (!item.starredBy) item.starredBy = [];
-
-        const alreadyStarred = item.starredBy.some(objId => objId.equals(objectUserId));
-
-        if (alreadyStarred) {
-            item.starredBy = item.starredBy.filter(objId => !objId.equals(objectUserId));
-            item.stars = Math.max(0, item.stars - 1);
-            await item.save();
-            return res.json({ message: 'Star removed', stars: item.stars, starred: false });
-        } else {
-            item.starredBy.push(objectUserId);
-            item.stars = (item.stars || 0) + 1;
-            await item.save();
-            return res.json({ message: 'Star added', stars: item.stars, starred: true });
-        }
-    } catch (err) {
-        console.error('Error updating stars:', err);
-        res.status(500).json({ error: 'Failed to update stars', details: err.message });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid item ID" });
     }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+
+    const objectUserId = new mongoose.Types.ObjectId(userId);
+    const item = await Item.findById(id);
+    if (!item) return res.status(404).json({ error: "Item not found" });
+
+    if (!item.starredBy) item.starredBy = [];
+
+    const alreadyStarred = item.starredBy.some((objId) =>
+      objId.equals(objectUserId),
+    );
+
+    if (alreadyStarred) {
+      item.starredBy = item.starredBy.filter(
+        (objId) => !objId.equals(objectUserId),
+      );
+      item.stars = Math.max(0, item.stars - 1);
+      await item.save();
+      return res.json({
+        message: "Star removed",
+        stars: item.stars,
+        starred: false,
+      });
+    } else {
+      item.starredBy.push(objectUserId);
+      item.stars = (item.stars || 0) + 1;
+      await item.save();
+      return res.json({
+        message: "Star added",
+        stars: item.stars,
+        starred: true,
+      });
+    }
+  } catch (err) {
+    console.error("Error updating stars:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to update stars", details: err.message });
+  }
 });
 
-router.put('/:id', upload.single('image'), async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, description, userId } = req.body;
+router.put("/:id", upload.single("image"), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, userId } = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ error: 'Invalid item ID' });
-        }
-
-        const item = await Item.findById(id);
-        if (!item) return res.status(404).json({ error: 'Item not found' });
-
-        if (item.owner.toString() !== userId) {
-            return res.status(403).json({ error: 'Unauthorized to edit this post' });
-        }
-
-        const updatedData = { name, description };
-        if (req.file) {
-            updatedData.image = `/uploads/${req.file.filename}`;
-        }
-
-        const updatedItem = await Item.findByIdAndUpdate(id, updatedData, { new: true });
-        res.json({ message: 'Item updated successfully', item: updatedItem });
-
-    } catch (err) {
-        console.error('Error updating item:', err);
-        res.status(500).json({ error: 'Failed to update item', details: err.message });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid item ID" });
     }
+
+    const item = await Item.findById(id);
+    if (!item) return res.status(404).json({ error: "Item not found" });
+
+    if (item.owner.toString() !== userId) {
+      return res.status(403).json({ error: "Unauthorized to edit this post" });
+    }
+
+    const updatedData = { name, description };
+    if (req.file) {
+      updatedData.image = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedItem = await Item.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
+    res.json({ message: "Item updated successfully", item: updatedItem });
+  } catch (err) {
+    console.error("Error updating item:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to update item", details: err.message });
+  }
 });
 
-router.delete('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { userId } = req.body;
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
 
-        const item = await Item.findById(id);
-        if (!item) return res.status(404).json({ error: 'Item not found' });
+    const item = await Item.findById(id);
+    if (!item) return res.status(404).json({ error: "Item not found" });
 
-        if (item.owner.toString() !== userId) {
-            return res.status(403).json({ error: 'Unauthorized to delete this post' });
-        }
-
-        await item.deleteOne();
-        res.json({ message: 'Item deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting item:', error);
-        res.status(500).json({ error: 'Server error while deleting item' });
+    if (item.owner.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to delete this post" });
     }
+
+    await item.deleteOne();
+    res.json({ message: "Item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    res.status(500).json({ error: "Server error while deleting item" });
+  }
 });
 
 export default router;
