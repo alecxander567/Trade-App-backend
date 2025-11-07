@@ -2,8 +2,25 @@ import { Router } from "express";
 import User from "../models/User.js";
 import Item from "../models/Item.js";
 import bcrypt from "bcrypt";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 const router = Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = "uploads/profileImages";
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}-${file.fieldname}${ext}`);
+  },
+});
+
+const upload = multer({ storage });
 
 router.post("/register", async (req, res) => {
   try {
@@ -96,6 +113,61 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.put("/:id/upload", upload.single("profileImage"), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (!req.file) return res.status(400).json({ error: "No image uploaded" });
+
+    const imageUrl = `http://192.168.1.99:5000/${req.file.path.replace(/\\/g, "/")}`;
+    user.profileImage = imageUrl;
+    await user.save();
+
+    res.json({ message: "Profile image updated", profileImage: imageUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Image upload failed" });
+  }
+});
+
+router.put("/:id/profile", async (req, res) => {
+  try {
+    const { username, email } = req.body;
+
+    if (!username && !email) {
+      return res.status(400).json({ error: "At least one field is required" });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== req.params.id) {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+      user.email = email;
+    }
+
+    if (username) user.username = username;
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated",
+      user: {
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update profile" });
   }
 });
 
